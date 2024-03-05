@@ -1,8 +1,7 @@
 package com.yakupselami.spring6restmvc.services;
 
 
-import com.yakupselami.spring6restmvc.model.Beer;
-import com.yakupselami.spring6restmvc.model.Customer;
+import com.yakupselami.spring6restmvc.model.CustomerDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,14 +10,14 @@ import java.util.UUID;
 @Service
 public interface CustomerService {
 
-    List<Customer> listCustomers();
-    Customer getCustomerById(UUID customerId);
+    List<CustomerDTO> listCustomers();
+    CustomerDTO getCustomerById(UUID customerId);
 
-    Customer saveNewCustomer(Customer customer);
+    CustomerDTO saveNewCustomer(CustomerDTO customer);
 
-    void updateCustomerById(UUID customerId, Customer customer);
+    void updateCustomerById(UUID customerId, CustomerDTO customer);
 
     void deleteCustomerById(UUID customerId);
 
-    void patchCustomerById(UUID customerId, Customer customer);
+    void patchCustomerById(UUID customerId, CustomerDTO customer);
 }

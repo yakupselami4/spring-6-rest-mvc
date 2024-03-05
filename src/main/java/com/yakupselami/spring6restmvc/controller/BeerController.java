@@ -1,6 +1,6 @@
 package com.yakupselami.spring6restmvc.controller;
 
-import com.yakupselami.spring6restmvc.model.Beer;
+import com.yakupselami.spring6restmvc.model.BeerDTO;
 import com.yakupselami.spring6restmvc.services.BeerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class BeerController {
     private final BeerService beerService;
 
     @PatchMapping(BEER_PATH_ID)
-    public ResponseEntity updateBeerPatchById(@PathVariable("beerId") UUID beerId, @RequestBody  Beer beer){
+    public ResponseEntity updateBeerPatchById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer){
         beerService.patchBeerById(beerId, beer);
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -39,7 +39,7 @@ public class BeerController {
     }
 
     @PutMapping(BEER_PATH_ID)
-    public ResponseEntity updateById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer){
+    public ResponseEntity updateById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer){
         beerService.updateBeerById(beerId,beer);
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -48,8 +48,8 @@ public class BeerController {
 
     @PostMapping
     //@RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity handlePost(@RequestBody Beer beer){
-        Beer savedBeer = beerService.saveNewBeer(beer);
+    public ResponseEntity handlePost(@RequestBody BeerDTO beer){
+        BeerDTO savedBeer = beerService.saveNewBeer(beer);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location",BEER_PATH+ savedBeer.getId().toString());
@@ -58,12 +58,12 @@ public class BeerController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Beer> listBeers(){
+    public List<BeerDTO> listBeers(){
         return beerService.ListBeers();
     }
 
     @RequestMapping(value = BEER_PATH_ID,method = RequestMethod.GET)
-    public Beer getBeerById(@PathVariable("beerId") UUID beerId){
+    public BeerDTO getBeerById(@PathVariable("beerId") UUID beerId){
         log.debug("Get beer by Id - in controller");
         return beerService.getBeerById(beerId);
     }

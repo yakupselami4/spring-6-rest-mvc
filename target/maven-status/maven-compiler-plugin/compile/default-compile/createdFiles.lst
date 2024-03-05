@@ -1,5 +1,3 @@
-com\yakupselami\spring6restmvc\services\BeerServiceImpl.class
-com\yakupselami\spring6restmvc\model\Beer$BeerBuilder.class
 com\yakupselami\spring6restmvc\model\BeerStyle.class
 com\yakupselami\spring6restmvc\services\BeerService.class
-com\yakupselami\spring6restmvc\model\Beer.class
+com\yakupselami\spring6restmvc\services\BeerServiceImpl.class
