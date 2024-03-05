@@ -1,3 +1,7 @@
+com\yakupselami\spring6restmvc\mappers\CustomerMapperImpl.class
 com\yakupselami\spring6restmvc\model\BeerStyle.class
 com\yakupselami\spring6restmvc\services\BeerService.class
+com\yakupselami\spring6restmvc\Spring6RestMvcApplication.class
 com\yakupselami\spring6restmvc\services\BeerServiceImpl.class
+com\yakupselami\spring6restmvc\services\CustomerServiceJPA.class
+com\yakupselami\spring6restmvc\mappers\BeerMapperImpl.class

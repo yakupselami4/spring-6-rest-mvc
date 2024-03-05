@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -78,6 +79,8 @@ class BeerControllerTest {
     void testDeleteBeer() throws Exception{
         BeerDTO beer = beerServiceImpl.ListBeers().get(0);
 
+        given(beerService.deleteBeerById(any())).willReturn(true);
+
         mockMvc.perform(delete("/api/v1/beer/"+beer.getId())
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
@@ -91,7 +94,7 @@ class BeerControllerTest {
     @Test
     void testUpdateBeer() throws Exception{
         BeerDTO beer = beerServiceImpl.ListBeers().get(0);
-
+        given(beerService.updateBeerById(any(),any())).willReturn(Optional.of(beer));
         mockMvc.perform(put("/api/v1/beer/"+beer.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -134,7 +137,7 @@ class BeerControllerTest {
 
         BeerDTO testBeer = beerServiceImpl.ListBeers().get(0);
 
-        given(beerService.getBeerById(testBeer.getId())).willReturn(testBeer);
+        given(beerService.getBeerById(testBeer.getId())).willReturn(Optional.of(testBeer));
 
 
         mockMvc.perform(get("/api/v1/beer/" + testBeer.getId())
@@ -142,7 +145,7 @@ class BeerControllerTest {
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$.id", is(testBeer.getId().toString())))
-                .andExpect(jsonPath("$.beerName", is(testBeer.getBeerName() + "foo")));
+                .andExpect(jsonPath("$.beerName", is(testBeer.getBeerName())));
 
         //System.out.println(beerController.getBeerById(UUID.randomUUID()));
     }

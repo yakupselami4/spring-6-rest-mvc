@@ -10,17 +10,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/beer")
 public class BeerController {
 
 
-    public static final String BEER_PATH="/api/v1/beer";
-    public static final String BEER_PATH_ID=BEER_PATH+"/{beerId}";
+    public static final String BEER_PATH="/api/v1/beer/";
+    public static final String BEER_PATH_ID=BEER_PATH+"{beerId}";
     private final BeerService beerService;
 
     @PatchMapping(BEER_PATH_ID)
@@ -33,21 +33,24 @@ public class BeerController {
     @DeleteMapping(BEER_PATH_ID)
     public ResponseEntity deleteBeerById(@PathVariable("beerId") UUID beerId){
 
-        beerService.deleteBeerById(beerId);
+        if (!beerService.deleteBeerById(beerId)){
+            throw new NotFoundException();
+        }
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping(BEER_PATH_ID)
     public ResponseEntity updateById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer){
-        beerService.updateBeerById(beerId,beer);
+        if(beerService.updateBeerById(beerId,beer).isEmpty()){
+            throw new NotFoundException();
+        }
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
 
-    @PostMapping
-    //@RequestMapping(method = RequestMethod.POST)
+    @PostMapping(BEER_PATH)
     public ResponseEntity handlePost(@RequestBody BeerDTO beer){
         BeerDTO savedBeer = beerService.saveNewBeer(beer);
 
@@ -57,15 +60,15 @@ public class BeerController {
         return new ResponseEntity(headers ,HttpStatus.CREATED);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping(value = BEER_PATH)
     public List<BeerDTO> listBeers(){
         return beerService.ListBeers();
     }
 
-    @RequestMapping(value = BEER_PATH_ID,method = RequestMethod.GET)
-    public BeerDTO getBeerById(@PathVariable("beerId") UUID beerId){
+    @GetMapping(value = BEER_PATH_ID)
+    public Optional<BeerDTO> getBeerById(@PathVariable("beerId") UUID beerId){
         log.debug("Get beer by Id - in controller");
-        return beerService.getBeerById(beerId);
+        return Optional.ofNullable(beerService.getBeerById(beerId).orElseThrow(NotFoundException::new));
     }
 
 

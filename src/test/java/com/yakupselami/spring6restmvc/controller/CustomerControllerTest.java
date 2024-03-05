@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -93,6 +94,9 @@ class CustomerControllerTest {
     void testDeleteBeer() throws Exception{
         CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
 
+        given(customerService.deleteCustomerById(any())).willReturn(true);
+
+
         mockMvc.perform(delete("/api/v1/customer/"+customer.getCustomerId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
@@ -135,7 +139,7 @@ class CustomerControllerTest {
 
         CustomerDTO testCustomer = customerServiceImpl.listCustomers().get(0);
 
-        given(customerService.getCustomerById(testCustomer.getCustomerId())).willReturn(testCustomer);
+        given(customerService.getCustomerById(testCustomer.getCustomerId())).willReturn(Optional.of(testCustomer));
 
 
         mockMvc.perform(get("/api/v1/customer/" + testCustomer.getCustomerId())
@@ -143,7 +147,7 @@ class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(testCustomer.getCustomerId().toString())))
-                .andExpect(jsonPath("$.customerName", is(testCustomer.getCustomerName() + "foo")));
+                .andExpect(jsonPath("$.customerName", is(testCustomer.getCustomerName())));
 //
     }
 }
