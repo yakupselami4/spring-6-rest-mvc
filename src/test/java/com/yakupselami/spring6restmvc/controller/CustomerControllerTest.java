@@ -1,6 +1,8 @@
 package com.yakupselami.spring6restmvc.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yakupselami.spring6restmvc.entities.Customer;
+import com.yakupselami.spring6restmvc.model.BeerDTO;
 import com.yakupselami.spring6restmvc.model.CustomerDTO;
 import com.yakupselami.spring6restmvc.services.CustomerService;
 import com.yakupselami.spring6restmvc.services.CustomerServiceImpl;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +40,8 @@ class CustomerControllerTest {
 
     @Autowired
     ObjectMapper objectMapper;
-
+    @Autowired
+    CustomerController customerController;
     @MockBean
     CustomerService customerService;
     @Captor
@@ -52,6 +56,26 @@ class CustomerControllerTest {
     void setUp(){
         customerServiceImpl = new CustomerServiceImpl();
     }
+
+
+
+    @Test
+    void testCreateCustomerNullCustomerName() throws Exception{
+        CustomerDTO customerDTO = CustomerDTO.builder().build();
+
+        given(customerService.saveNewCustomer(any(CustomerDTO.class))).willReturn(customerServiceImpl.listCustomers().get(1));
+
+        MvcResult mvcResult = mockMvc.perform(post(customerController.CUSTOMER_PATH)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(customerDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.length()",is(2)))
+                .andReturn();
+
+        System.out.println(mvcResult.getResponse().getContentAsString());
+    }
+
 
     @Test
     void testCreateNewCustomer() throws Exception {

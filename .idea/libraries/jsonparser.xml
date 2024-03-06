@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="jsonparser">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../../../../Json Parser/lib" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../../../../Json Parser/lib" recursive="false" />
+  </library>
+</component>
