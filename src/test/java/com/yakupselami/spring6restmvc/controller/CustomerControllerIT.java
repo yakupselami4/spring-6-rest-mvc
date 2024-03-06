@@ -1,15 +1,12 @@
 package com.yakupselami.spring6restmvc.controller;
 
-import com.yakupselami.spring6restmvc.entities.Beer;
 import com.yakupselami.spring6restmvc.entities.Customer;
 import com.yakupselami.spring6restmvc.mappers.CustomerMapper;
-import com.yakupselami.spring6restmvc.model.BeerDTO;
 import com.yakupselami.spring6restmvc.model.CustomerDTO;
 import com.yakupselami.spring6restmvc.repositories.CustomerRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
@@ -48,10 +45,10 @@ class CustomerControllerIT {
     void deleteByIdFound(){
         Customer customer = repository.findAll().get(0);
 
-        ResponseEntity responseEntity = controller.deleteCustomerById(customer.getCustomerId());
+        ResponseEntity responseEntity = controller.deleteCustomerById(customer.getId());
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
 
-        assertThat(repository.findById(customer.getCustomerId()).isEmpty());
+        assertThat(repository.findById(customer.getId()).isEmpty());
 //        Customer foundCustomer = repository.findById(customer.getCustomerId()).get();
 //        assertThat(foundCustomer).isNotNull();
     }
@@ -64,12 +61,12 @@ class CustomerControllerIT {
         final String customerName= "Updated";
         customerDTO.setCustomerName(customerName);
 
-        ResponseEntity responseEntity = controller.updateCustomerById(customer.getCustomerId(),customerDTO);
+        ResponseEntity responseEntity = controller.updateCustomerById(customer.getId(),customerDTO);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
 
 
-        Customer updatedCustomer = repository.findById(customer.getCustomerId()).get();
-        assertThat(updatedCustomer.getCustomerName()).isEqualTo(customerName);
+        Customer updatedCustomer = repository.findById(customer.getId()).get();
+        assertThat(updatedCustomer.getName()).isEqualTo(customerName);
     }
 
 
@@ -104,7 +101,7 @@ class CustomerControllerIT {
     void testGetById(){
         Customer customer = repository.findAll().get(0);
 
-        Optional<CustomerDTO> dto =  controller.getCustomerById(customer.getCustomerId());
+        Optional<CustomerDTO> dto =  controller.getCustomerById(customer.getId());
 
         assertThat(dto).isNotNull();
     }

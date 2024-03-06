@@ -1,0 +1,7 @@
+com\yakupselami\spring6restmvc\controller\BeerControllerIT.class
+com\yakupselami\spring6restmvc\controller\CustomerControllerTest.class
+com\yakupselami\spring6restmvc\Spring6RestMvcApplicationTests.class
+com\yakupselami\spring6restmvc\controller\CustomerControllerIT.class
+com\yakupselami\spring6restmvc\controller\BeerControllerTest.class
+com\yakupselami\spring6restmvc\repositories\BeerRepositoryTest.class
+com\yakupselami\spring6restmvc\repositories\CustomerRepositoryTest.class

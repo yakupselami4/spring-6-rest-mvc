@@ -85,45 +85,45 @@ public class BootstrapData implements CommandLineRunner{
         }
     }
     private void loaderCustomerData() {
-        if (customerRepository.count() == 0) {
-            Customer customer1 = Customer.builder()
-                    .customerId((UUID.randomUUID()))
-                    .customerName("Alejandra Hudson")
-                    .version(1)
-                    .createdDate(LocalDateTime.now())
-                    .lastModifiedDate(LocalDateTime.now())
-                    .build();
-            Customer customer2 = Customer.builder()
-                    .customerId((UUID.randomUUID()))
-                    .customerName("Aracely Knight")
-                    .version(1)
-                    .createdDate(LocalDateTime.now())
-                    .lastModifiedDate(LocalDateTime.now())
-                    .build();
-            Customer customer3 = Customer.builder()
-                    .customerId((UUID.randomUUID()))
-                    .customerName("Jeremiah Novak")
-                    .version(1)
-                    .createdDate(LocalDateTime.now())
-                    .lastModifiedDate(LocalDateTime.now())
-                    .build();
-            Customer customer4 = Customer.builder()
-                    .customerId((UUID.randomUUID()))
-                    .customerName("Jayden Travis")
-                    .version(1)
-                    .createdDate(LocalDateTime.now())
-                    .lastModifiedDate(LocalDateTime.now())
-                    .build();
-            Customer customer5 = Customer.builder()
-                    .customerId((UUID.randomUUID()))
-                    .customerName("Jovan Maynard")
-                    .version(1)
-                    .createdDate(LocalDateTime.now())
-                    .lastModifiedDate(LocalDateTime.now())
-                    .build();
+//        if (customerRepository.count() == 0) {
+//            Customer customer1 = Customer.builder()
+//                    .customerId((UUID.randomUUID()))
+//                    .customerName("Alejandra Hudson")
+//                    .version(1)
+//                    .createdDate(LocalDateTime.now())
+//                    .lastModifiedDate(LocalDateTime.now())
+//                    .build();
+//            Customer customer2 = Customer.builder()
+//                    .customerId((UUID.randomUUID()))
+//                    .customerName("Aracely Knight")
+//                    .version(1)
+//                    .createdDate(LocalDateTime.now())
+//                    .lastModifiedDate(LocalDateTime.now())
+//                    .build();
+//            Customer customer3 = Customer.builder()
+//                    .customerId((UUID.randomUUID()))
+//                    .customerName("Jeremiah Novak")
+//                    .version(1)
+//                    .createdDate(LocalDateTime.now())
+//                    .lastModifiedDate(LocalDateTime.now())
+//                    .build();
+//            Customer customer4 = Customer.builder()
+//                    .customerId((UUID.randomUUID()))
+//                    .customerName("Jayden Travis")
+//                    .version(1)
+//                    .createdDate(LocalDateTime.now())
+//                    .lastModifiedDate(LocalDateTime.now())
+//                    .build();
+//            Customer customer5 = Customer.builder()
+//                    .customerId((UUID.randomUUID()))
+//                    .customerName("Jovan Maynard")
+//                    .version(1)
+//                    .createdDate(LocalDateTime.now())
+//                    .lastModifiedDate(LocalDateTime.now())
+//                    .build();
 
 
-            customerRepository.saveAll(Arrays.asList(customer1, customer2, customer3, customer4, customer5));
+            //customerRepository.saveAll(Arrays.asList(customer1, customer2, customer3, customer4, customer5));
         }
     }
-}
+
