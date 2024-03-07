@@ -32,6 +32,8 @@ public class Customer {
     @NotBlank
     private String name;
 
+    @Column(length = 255)
+    private String email;
     @Version
     private Integer version;
 
