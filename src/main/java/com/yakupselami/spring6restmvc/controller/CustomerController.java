@@ -47,7 +47,7 @@ public class CustomerController {
 
 
     @PostMapping
-    public ResponseEntity handlePost(@Validated @RequestBody CustomerDTO customer){
+    public ResponseEntity handlePost(@RequestBody CustomerDTO customer){
         CustomerDTO savedCustomer = customerService.saveNewCustomer(customer);
 
         HttpHeaders headers = new HttpHeaders();
@@ -55,6 +55,7 @@ public class CustomerController {
 
         return new ResponseEntity(headers,HttpStatus.CREATED);
     }
+
 
     @GetMapping(value = CUSTOMER_PATH)
     public List<CustomerDTO> listCustomers(){

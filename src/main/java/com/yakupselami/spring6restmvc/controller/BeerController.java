@@ -1,6 +1,7 @@
 package com.yakupselami.spring6restmvc.controller;
 
 import com.yakupselami.spring6restmvc.model.BeerDTO;
+import com.yakupselami.spring6restmvc.model.BeerStyle;
 import com.yakupselami.spring6restmvc.services.BeerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -62,14 +62,17 @@ public class BeerController {
     }
 
     @GetMapping(value = BEER_PATH)
-    public List<BeerDTO> listBeers(){
-        return beerService.ListBeers();
+    public List<BeerDTO> listBeers(@RequestParam(required = false) String beerName,
+                                   @RequestParam(required = false) BeerStyle beerStyle,
+                                   @RequestParam(required = false) Boolean showInInventory){
+
+        return beerService.listBeers(null,null, false);
     }
 
     @GetMapping(value = BEER_PATH_ID)
-    public Optional<BeerDTO> getBeerById(@PathVariable("beerId") UUID beerId){
+    public BeerDTO getBeerById(@PathVariable("beerId") UUID beerId){
         log.debug("Get beer by Id - in controller");
-        return Optional.ofNullable(beerService.getBeerById(beerId).orElseThrow(NotFoundException::new));
+        return beerService.getBeerById(beerId).orElseThrow(NotFoundException::new);
     }
 
 

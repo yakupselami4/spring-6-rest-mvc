@@ -41,6 +41,13 @@ public class CustomerServiceJPA implements CustomerService {
     }
 
     @Override
+    public List<CustomerDTO> getAllCustomers() {
+        return customerRepository.findAll().stream()
+                .map(customerMapper::customerToCustomerDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Optional<CustomerDTO> updateCustomerById(UUID customerId, CustomerDTO customer) {
         AtomicReference<Optional<CustomerDTO>> atomicReference = new AtomicReference<>();
 

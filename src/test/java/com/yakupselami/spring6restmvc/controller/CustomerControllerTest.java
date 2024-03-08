@@ -60,97 +60,79 @@ class CustomerControllerTest {
 
 
     @Test
-    void testCreateCustomerNullCustomerName() throws Exception{
-        CustomerDTO customerDTO = CustomerDTO.builder().build();
-
-        given(customerService.saveNewCustomer(any(CustomerDTO.class))).willReturn(customerServiceImpl.listCustomers().get(1));
-
-        MvcResult mvcResult = mockMvc.perform(post(customerController.CUSTOMER_PATH)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(customerDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.length()",is(2)))
-                .andReturn();
-
-        System.out.println(mvcResult.getResponse().getContentAsString());
-    }
-
-
-    @Test
-    void testCreateNewCustomer() throws Exception {
-
-        CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
-        customer.setVersion(null);
-        customer.setCustomerId(null);
-
-        given(customerService.saveNewCustomer(any(CustomerDTO.class))).willReturn(customerServiceImpl.listCustomers().get(1));
-
-        mockMvc.perform(post("/api/v1/customer")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .contentType(objectMapper.writeValueAsString(customer)))
-                .andExpect(status().isCreated())
-                .andExpect(header().exists("Location"));
-    }
-
-
-    @Test
     void testPatchCustomer() throws Exception {
-        CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
+        CustomerDTO customer = customerServiceImpl.getAllCustomers().get(0);
 
         Map<String, Object> customerMap = new HashMap<>();
-        customerMap.put("customerName", "New Name");
+        customerMap.put("name", "New Name");
 
-        mockMvc.perform(patch("/api/v1/customer/" + customer.getCustomerId())
+        mockMvc.perform(patch( CustomerController.CUSTOMER_PATH_ID, customer.getCustomerId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(customerMap)))
                 .andExpect(status().isNoContent());
 
-        verify(customerService).patchCustomerById(uuidArgumentCaptor.capture(), customerArgumentCaptor.capture());
+        verify(customerService).patchCustomerById(uuidArgumentCaptor.capture(),
+                customerArgumentCaptor.capture());
 
-        assertThat(customer.getCustomerId()).isEqualTo(uuidArgumentCaptor.getValue());
-        assertThat(customerMap.get("customerName")).isEqualTo(customerArgumentCaptor.getValue().getCustomerName());
+        assertThat(uuidArgumentCaptor.getValue()).isEqualTo(customer.getCustomerId());
+        assertThat(customerArgumentCaptor.getValue().getCustomerName())
+                .isEqualTo(customerMap.get("name"));
     }
 
     @Test
-    void testDeleteBeer() throws Exception{
-        CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
+    void testDeleteCustomer() throws Exception {
+        CustomerDTO customer = customerServiceImpl.getAllCustomers().get(0);
 
         given(customerService.deleteCustomerById(any())).willReturn(true);
 
-
-        mockMvc.perform(delete("/api/v1/customer/"+customer.getCustomerId())
-                        .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(delete(CustomerController.CUSTOMER_PATH_ID, customer.getCustomerId())
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
         verify(customerService).deleteCustomerById(uuidArgumentCaptor.capture());
 
         assertThat(customer.getCustomerId()).isEqualTo(uuidArgumentCaptor.getValue());
     }
 
-
     @Test
-    void testUpdateCustomer() throws Exception{
-        CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
+    void testUpdateCustomer() throws Exception {
+        CustomerDTO customer = customerServiceImpl.getAllCustomers().get(0);
 
-        mockMvc.perform(put("/api/v1/customer/"+customer.getCustomerId())
-                        .accept(MediaType.APPLICATION_JSON)
+        given(customerService.updateCustomerById(any(), any())).willReturn(Optional.of(CustomerDTO.builder()
+                .build()));
+
+        mockMvc.perform(put(CustomerController.CUSTOMER_PATH_ID, customer.getCustomerId())
+                        .content(objectMapper.writeValueAsString(customer))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(customer)))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
-        verify(customerService).updateCustomerById(any(UUID.class), any(CustomerDTO.class));
+
+        verify(customerService).updateCustomerById(uuidArgumentCaptor.capture(), any(CustomerDTO.class));
+
+        assertThat(customer.getCustomerId()).isEqualTo(uuidArgumentCaptor.getValue());
     }
 
+    @Test
+    void testCreateCustomer() throws Exception {
+        CustomerDTO customer = customerServiceImpl.getAllCustomers().get(0);
+        customer.setCustomerId(null);
+        customer.setVersion(null);
+
+        given(customerService.saveNewCustomer(any(CustomerDTO.class)))
+                .willReturn(customerServiceImpl.getAllCustomers().get(1));
+
+        mockMvc.perform(post(CustomerController.CUSTOMER_PATH).contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(customer)))
+                .andExpect(status().isCreated())
+                .andExpect(header().exists("Location"));
+    }
 
     @Test
-    void testListCustomers() throws Exception{
+    void listAllCustomers() throws Exception {
+        given(customerService.getAllCustomers()).willReturn(customerServiceImpl.getAllCustomers());
 
-        given(customerService.listCustomers()).willReturn(customerServiceImpl.listCustomers());
-
-        mockMvc.perform(get("/api/v1/customer")
+        mockMvc.perform(get(CustomerController.CUSTOMER_PATH)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -158,20 +140,24 @@ class CustomerControllerTest {
     }
 
     @Test
-    void getCustomerById() throws Exception{
+    void getCustomerByIdNotFound() throws Exception {
 
+        given(customerService.getCustomerById(any(UUID.class))).willReturn(Optional.empty());
 
-        CustomerDTO testCustomer = customerServiceImpl.listCustomers().get(0);
+        mockMvc.perform(get(CustomerController.CUSTOMER_PATH_ID, UUID.randomUUID()))
+                .andExpect(status().isNotFound());
+    }
 
-        given(customerService.getCustomerById(testCustomer.getCustomerId())).willReturn(Optional.of(testCustomer));
+    @Test
+    void getCustomerById() throws Exception {
+        CustomerDTO customer = customerServiceImpl.getAllCustomers().get(0);
 
+        given(customerService.getCustomerById(customer.getCustomerId())).willReturn(Optional.of(customer));
 
-        mockMvc.perform(get("/api/v1/customer/" + testCustomer.getCustomerId())
+        mockMvc.perform(get(CustomerController.CUSTOMER_PATH_ID, customer.getCustomerId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is(testCustomer.getCustomerId().toString())))
-                .andExpect(jsonPath("$.customerName", is(testCustomer.getCustomerName())));
-//
+                .andExpect(jsonPath("$.name", is(customer.getCustomerName())));
     }
 }

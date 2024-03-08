@@ -76,6 +76,10 @@ public class CustomerServiceImpl implements CustomerService {
         customerMap.put(savedCustomer.getCustomerId(), savedCustomer);
         return savedCustomer;
     }
+    @Override
+    public List<CustomerDTO> getAllCustomers() {
+        return new ArrayList<>(customerMap.values());
+    }
 
     @Override
     public Optional<CustomerDTO> updateCustomerById(UUID customerId, CustomerDTO customer) {
