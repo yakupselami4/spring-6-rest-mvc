@@ -5,23 +5,22 @@ import com.yakupselami.spring6restmvc.model.BeerStyle;
 import com.yakupselami.spring6restmvc.services.BeerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
 public class BeerController {
-
-
     public static final String BEER_PATH="/api/v1/beer/";
     public static final String BEER_PATH_ID=BEER_PATH+"{beerId}";
+
     private final BeerService beerService;
 
     @PatchMapping(BEER_PATH_ID)
@@ -62,11 +61,13 @@ public class BeerController {
     }
 
     @GetMapping(value = BEER_PATH)
-    public List<BeerDTO> listBeers(@RequestParam(required = false) String beerName,
-                                   @RequestParam(required = false) BeerStyle beerStyle,
-                                   @RequestParam(required = false) Boolean showInInventory){
+    public Page listBeers(@RequestParam(required = false) String beerName,
+                          @RequestParam(required = false) BeerStyle beerStyle,
+                          @RequestParam(required = false) Boolean showInInventory,
+                          @RequestParam(required = false) Integer page,
+                          @RequestParam(required = false) Integer pageSize){
 
-        return beerService.listBeers(null,null, false);
+        return beerService.listBeers(beerName,beerStyle, showInInventory, page, pageSize);
     }
 
     @GetMapping(value = BEER_PATH_ID)
