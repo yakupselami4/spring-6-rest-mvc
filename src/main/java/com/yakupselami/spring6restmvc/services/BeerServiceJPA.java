@@ -116,6 +116,8 @@ public class BeerServiceJPA implements BeerService {
         ));
 
 
+
+
 //        AtomicReference<Optional<BeerDTO>> atomicReference = new AtomicReference<>();
 //
 //
